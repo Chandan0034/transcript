@@ -2,4 +2,4 @@ Flask
 Flask_Cors
 youtube_transcript_api
 YoutubeTags
-Gunicorn
+gunicorn
