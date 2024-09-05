@@ -31,6 +31,7 @@ def Home():
 @app.route('/transcript', methods=['GET'])
 def get_transcript():
     video_url = request.args.get('url')
+    language = request.args.get('ln')  # Language parameter is currently not used in the function
 
     if not video_url:
         return jsonify({"Message": "URL parameter is missing", "Success": False}), 400
@@ -42,11 +43,13 @@ def get_transcript():
     try:
         tagsOfVideo = videotags(video_url)
         titleOfVideo = videotitle(video_url)
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
-
-        transcript_data = " ".join(entry['text'] for entry in transcript).replace('\n', ' ')
-
-        return jsonify([{"title": titleOfVideo, "tags": tagsOfVideo}, {'transcriptText': transcript_data}]), 200
+        
+        try:
+            transcript = YouTubeTranscriptApi.get_transcript(video_id)
+            transcript_data = " ".join(entry['text'] for entry in transcript).replace('\n', ' ')
+            return jsonify([{"title": titleOfVideo, "tags": tagsOfVideo}, {'transcriptText': transcript_data}]), 200
+        except YouTubeTranscriptApi._errors.TranscriptsDisabled:
+            return jsonify({"Message": "Transcripts are disabled for this video", "Success": False}), 404
 
     except Exception as e:
         error_details = traceback.format_exc()
