@@ -1,5 +1,5 @@
 Flask
-Flask_Cors
-youtube_transcript_api
+Flask-Cors
+youtube-transcript-api
 YoutubeTags
 gunicorn
