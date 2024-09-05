@@ -1,0 +1,6 @@
+Flask
+Flask_Cors
+youtube_transcript_api
+YoutubeTags
+urllib
+Gunicorn
