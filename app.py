@@ -37,7 +37,7 @@ def  get_transcript():
     try:
         tagsOfVideo=videotags(video_url)
         titleOfVideo=videotitle(video_url)
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = YouTubeTranscriptApi.get_transcript(video_id,languages=['en','en-GB'])
         transcript_data = ""
         for entry in transcript:
             transcript_data+=entry['text']+" "
