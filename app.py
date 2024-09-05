@@ -30,7 +30,7 @@ def Home():
 def  get_transcript():
     video_url=request.args.get('url')
     video_id = extract_video_id(video_url)
-    # print(video_id)
+    print(video_id)
     print(video_url)
     if video_id is None:
         return jsonify({"Message":"Invalid URL","Success":False})
