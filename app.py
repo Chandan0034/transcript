@@ -1,13 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask,request,jsonify
 from flask_cors import CORS
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse, parse_qs
-from YoutubeTags import videotags, videotitle
-import traceback
+from YoutubeTags import videotags,videotitle
 
-app = Flask(__name__)
+app=Flask(__name__)
+
 CORS(app)
-
 def extract_video_id(youtube_url):
     """
     Extracts the video ID from a given YouTube URL.
@@ -23,38 +22,31 @@ def extract_video_id(youtube_url):
         elif query.path[:3] == '/v/':
             return query.path.split('/')[2]
     return None
-
 @app.route("/")
 def Home():
-    return jsonify({"Message": "Welcome To Api", "Success": True})
+    return jsonify({"Message":"Welcome To Api","Success":True})
 
-@app.route('/transcript', methods=['GET'])
-def get_transcript():
-    video_url = request.args.get('url')
-    language = request.args.get('ln')  # Language parameter is currently not used in the function
-
-    if not video_url:
-        return jsonify({"Message": "URL parameter is missing", "Success": False}), 400
-
+@app.route('/transcript',methods=['GET'])
+def  get_transcript():
+    video_url=request.args.get('url')
     video_id = extract_video_id(video_url)
+    # print(video_id)
+    print(video_url)
     if video_id is None:
-        return jsonify({"Message": "Invalid URL", "Success": False}), 400
-
+        return jsonify({"Message":"Invalid URL","Success":False})
     try:
-        tagsOfVideo = videotags(video_url)
-        titleOfVideo = videotitle(video_url)
-        
-        try:
-            transcript = YouTubeTranscriptApi.get_transcript(video_id)
-            transcript_data = " ".join(entry['text'] for entry in transcript).replace('\n', ' ')
-            return jsonify([{"title": titleOfVideo, "tags": tagsOfVideo}, {'transcriptText': transcript_data}]), 200
-        except YouTubeTranscriptApi._errors.TranscriptsDisabled:
-            return jsonify({"Message": "Transcripts are disabled for this video", "Success": False}), 404
+        tagsOfVideo=videotags(video_url)
+        titleOfVideo=videotitle(video_url)
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript_data = ""
+        for entry in transcript:
+            transcript_data+=entry['text']+" "
+    
+        transcript_data=transcript_data.replace('\n',' ')
+        return jsonify([{"title":titleOfVideo,"tags":tagsOfVideo},{'transcriptText':transcript_data}]), 200
 
     except Exception as e:
-        error_details = traceback.format_exc()
-        print(f"Error details: {error_details}")
-        return jsonify({'error': str(e), 'details': error_details}), 500
+        return jsonify({'error': str(e)}), 500
 
 
 # from flask import Flask, request, jsonify
