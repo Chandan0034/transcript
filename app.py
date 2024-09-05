@@ -37,12 +37,12 @@ def  get_transcript():
     try:
         tagsOfVideo=videotags(video_url)
         titleOfVideo=videotitle(video_url)
-        transcript = YouTubeTranscriptApi.get_transcript(video_id,languages=['en','en-GB'])
+        # transcript = YouTubeTranscriptApi.get_transcript(video_id,languages=['en','en-GB'])
         transcript_data = ""
-        for entry in transcript:
-            transcript_data+=entry['text']+" "
+        # for entry in transcript:
+        #     transcript_data+=entry['text']+" "
     
-        transcript_data=transcript_data.replace('\n',' ')
+        # transcript_data=transcript_data.replace('\n',' ')
         return jsonify([{"title":titleOfVideo,"tags":tagsOfVideo},{'transcriptText':transcript_data}]), 200
 
     except Exception as e:
